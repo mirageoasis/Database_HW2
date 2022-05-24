@@ -8,7 +8,6 @@ CREATE TABLE customer(
  name     VARCHAR(20),
  sex     INT,
  location    VARCHAR(20),
- cell_phone_number    VARCHAR(20),  
  
  PRIMARY KEY(customer_id)
 );
@@ -53,7 +52,7 @@ CREATE TABLE warehouse(
 #in_store_sales
 CREATE TABLE in_store_sales(
  order_id		INT NOT NULL AUTO_INCREMENT,
- order_time        DATE NOT NULL,
+ order_time        TIMESTAMP NOT NULL,
  amount				INT NOT NULL,
  product_id			INT NOT NULL,
  customer_id		INT NOT NULL,
@@ -68,9 +67,9 @@ CREATE TABLE in_store_sales(
 #online_sales
 CREATE TABLE online_sales(
  order_id			INT NOT NULL AUTO_INCREMENT,
- ETA				DATE NOT NULL,
- order_time			DATE NOT NULL,
- time_arrived		DATE,
+ ETA				TIMESTAMP NOT NULL,
+ order_time			TIMESTAMP NOT NULL,
+ time_arrived		TIMESTAMP,
  card_number		INT,
  amount				INT NOT NULL,
  tracking_number	INT NOT NULL,
@@ -96,8 +95,8 @@ CREATE TABLE store_stock(
 
 #store_reorder
 CREATE TABLE store_reorder (
- reorder_id		INT NOT NULL,
- time			DATE NOT NULL,
+ reorder_id		INT NOT NULL AUTO_INCREMENT,
+ time			TIMESTAMP NOT NULL,
  amount			INT NOT NULL,
  product_id		INT NOT NULL,
  store_id		INT NOT NULL,
@@ -119,8 +118,8 @@ CREATE TABLE warehouse_stock(
 
 #warehouse_reorder
 CREATE TABLE warehouse_reorder (
- reorder_id		INT NOT NULL,
- time			DATE NOT NULL,
+ reorder_id		INT NOT NULL AUTO_INCREMENT,
+ time			TIMESTAMP NOT NULL,
  amount			INT NOT NULL,
  product_id		INT NOT NULL,
  warehouse_id		INT NOT NULL,

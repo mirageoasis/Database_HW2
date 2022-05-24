@@ -1,0 +1,52 @@
+#product
+#35°³
+insert into product (product_id, manufacturer, type, name, price)
+values 
+('1', 'hanwha', 'toy', 'firework', '4'),
+('2', 'hanwha', 'bike', 'fire', '5'),
+('3', 'hanwha', 'glove', 'mei', '2'),
+('4', 'hanwha', 'paper', 'roadhog', '49'),
+('5', 'hanwha', 'creeper', 'bang', '12'),
+
+('6', 'bebob', 'cd', 'spike', '31'),
+('7', 'bebob', 'cd', 'zeto', '1'),
+('8', 'bebob', 'cd', 'ain', '2'),
+('9', 'bebob', 'cd', 'pei', '12'),
+('10', 'bebob', 'cd', 'julia', '13'),
+
+('11', 'sogang', 'major', 'computer', '15'),
+('12', 'sogang', 'major', 'history', '42'),
+('13', 'sogang', 'major', 'machine', '38'),
+('14', 'sogang', 'major', 'bio', '29'),
+('15', 'sogang', 'major', 'math', '10'),
+
+('16', 'nice', 'card', 'black', '11'),
+('17', 'nice', 'card', 'red', '12'),
+('18', 'nice', 'card', 'green', '13'),
+('19', 'nice', 'card', 'blue', '14'),
+('20', 'nice', 'card', 'purple', '15'),
+
+('21', 'foxtrot', 'tank', 'tiger 1', '42'),
+('22', 'foxtrot', 'tank', 'tiger 2', '45'),
+('23', 'foxtrot', 'tank', 'challenger', '13'),
+('24', 'foxtrot', 'tank', 'chieften', '45'),
+('25', 'foxtrot', 'tank', 'abrams', '12'),
+
+('26', 'golf', 'stick', 'driver 1', '33'),
+('27', 'golf', 'stick', 'driver 2', '21'),
+('28', 'golf', 'stick', 'driver 3', '51'),
+('29', 'golf', 'stick', 'driver 4', '12'),
+('30', 'golf', 'stick', 'driver 5', '14'),
+
+('31', 'hotel', 'food', 'pie 1', '4'),
+('32', 'hotel', 'food', 'pie 2', '4'),
+('33', 'hotel', 'food', 'pie 3', '6'),
+('34', 'hotel', 'food', 'pie 4', '8'),
+('35', 'hotel', 'food', 'pie 5', '10'),
+
+('31', 'dice', 'game', 'battlefield 1', '4'),
+('32', 'dice', 'game', 'battlefield 2', '4'),
+('33', 'dice', 'game', 'battlefield 3', '6'),
+('34', 'dice', 'game', 'battlefield 4', '8'),
+('35', 'dice', 'game', 'battlefield 5', '10'),
+;

@@ -1,0 +1,46 @@
+#customer
+#35°³
+insert into customer (name, sex, location)
+values
+('mike', 0, 'baker street'),
+('bike', 0, 'hongdae street'),
+('edie', 0, 'gangnam street'),
+('kim', 0, 'new york street'),
+('cho', 0, 'keterky street'),
+
+('park', 0, 'manchester street'),
+('bill', 0, 'daum street'),
+('jonadan', 0, 'google street'),
+('jotaro', 0, 'naver street'),
+('dio', 0, 'seoul street'),
+
+('kutaro', 0, 'osaka street'),
+('josta', 0, 'new york street'),
+('eren', 0, 'erdian street'),
+('miska', 1, 'erdian street'),
+('armin', 0, 'erdian street'),
+
+('jane', 1, 'rainforest street'),
+('tarjan', 0, 'rainforest street'),
+('chicken', 0, 'hatchery street')
+('robot', 0, 'adult siwm street'),
+('bitch pudding', 1, 'cake street'),
+
+('harry potter', 0, 'harry street')
+('wizly', 0, 'wizly stree'),
+('golem', 0, 'cave'),
+('oak', 0, 'mordor street'),
+('elf', 0, 'elven street'),
+
+('sauron', 0, 'mordor street'),
+('gandalf', 0, 'shyer street'),
+('prodo', 0, 'hobit street'),
+('king', 0, 'kingdom'),
+('chong', 1, 'hogwart street'),
+
+('junsik', 0, 'dongtan street'),
+('enum', 0, 'dongtan street'),
+('kein', 0, 'twitch street'),
+('gong', 0, 'china street'),
+('cha', 1, ' street')
+;

@@ -26,6 +26,39 @@
     <Text Include="curd.txt">
       <Filter>리소스 파일</Filter>
     </Text>
+    <Text Include="warehouse_reorder.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="customer.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="contract.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="product.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="store.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="warehouse.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="warehouse_stock.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="store_stock.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="in_store_sales.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="online_sales.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="store_reorder.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="file_reader.h">

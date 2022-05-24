@@ -1,0 +1,6 @@
+USE testing;
+#warehouse_reorder
+
+insert into warehouse_reorder (time, amount, product_id, warehouse_id)
+values
+('2022-2-21 22:23:12',10 ,1, 1);

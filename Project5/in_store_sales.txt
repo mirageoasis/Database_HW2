@@ -1,0 +1,5 @@
+#in_store_sales
+
+insert into in_store_sales (order_time, amount, product_id, customer_id, store_id)
+values 
+('1998-12-31 23:59:59', 10, 1, 1, 1);
