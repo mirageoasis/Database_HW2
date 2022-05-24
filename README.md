@@ -1,9 +1,8 @@
 # Database_HW2
 
+TO DO LIST
 
-to do list
-
-make dataset
+1. make dataset
 
 customer ✔️
 
@@ -27,5 +26,5 @@ store_reorder
 
 warehouse_reorder
 
-4. sql 문 코딩하기 
+2. sql 문 코딩하기 
 
