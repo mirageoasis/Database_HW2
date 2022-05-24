@@ -23,7 +23,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="curd.txt">
+    <Text Include="ddl.txt">
       <Filter>리소스 파일</Filter>
     </Text>
     <Text Include="warehouse_reorder.txt">

@@ -9,7 +9,7 @@ const char* user = "root";
 const char* pw = "password";
 const char* db = "testing"; //여기다가 원하는 스키마 이름 넣기 
 
-const char* create_table = "curd.txt";
+const char* create_table = "ddl.txt";
 const char* insert_data = "insert.txt";
 const char* use_schema = "use testing";
 

@@ -148,7 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="contract.txt" />
-    <Text Include="curd.txt" />
+    <Text Include="ddl.txt" />
     <Text Include="customer.txt" />
     <Text Include="warehouse_reorder.txt" />
     <Text Include="in_store_sales.txt" />
