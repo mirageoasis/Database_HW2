@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "mysql.h"
+#include "file_reader.h"
 
 #pragma comment(lib, "libmysql.lib")
 
@@ -7,60 +8,43 @@ const char* host = "localhost";
 const char* user = "root";
 const char* pw = "password";
 const char* db = "testing"; //여기다가 원하는 스키마 이름 넣기 
+const char* file_name = "curd.txt";
+const char* use_schema = "use testing";
+
+MYSQL* connection = NULL;
+MYSQL conn;
+
 
 int main(void) {
 
-	MYSQL* connection = NULL;
-	MYSQL conn;
-	MYSQL_RES* sql_result;
-	MYSQL_ROW sql_row;
+
 
 	if (mysql_init(&conn) == NULL)
 		printf("mysql_init() error!");
 
-	connection = mysql_real_connect(&conn, host, user, pw, db, 3306, (const char*)NULL, 0); //연결하는 함수
+	connection = mysql_real_connect(&conn, host, user, pw, NULL, 3306, (const char*)NULL, 0); //연결하는 함수
 	
-	
-	
+
+	// establish connection
 	if (connection == NULL)
 	{
 		printf("%d ERROR : %s\n", mysql_errno(&conn), mysql_error(&conn));
 		return 1;
 	}
-
 	else
 	{
 		printf("Connection Succeed\n");
-
-		if (mysql_select_db(&conn, db))
-		{
-			printf("%d ERROR : %s\n", mysql_errno(&conn), mysql_error(&conn));
-			return 1;
-		}
-		const char* query_first = "use testing";
-
-		mysql_query(connection, query_first);
-
-		const char* query = "select * from tester";
-		int state = 0;
-
-		state = mysql_query(connection, query);
-		if (state == 0)
-		{
-			sql_result = mysql_store_result(connection);
-			while ((sql_row = mysql_fetch_row(sql_result)) != NULL)
-			{
-				printf("%s %s %s %s\n", sql_row[0], sql_row[1], sql_row[2], sql_row[3]);
-			}
-			mysql_free_result(sql_result);
-		}
-		else {
-			fprintf(stdout, "cannot find!\n");
-		}
-
-		mysql_close(connection);
+		// 쿼리 실행
+		file_reader(file_name);// read create table
 	}
+	//
 
+
+
+
+
+	mysql_query(connection, "drop SCHEMA testing"); //테이블 폭파
+	mysql_close(connection);
 	return 0;
 }
 
