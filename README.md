@@ -3,7 +3,7 @@
 
 ## TO DO list
 
-1. make dataset
+1. make dataset ✔️
    - customer ✔️
    - contract ✔️
    - in_store_sales ✔️
