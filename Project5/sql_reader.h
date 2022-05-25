@@ -1,6 +1,6 @@
 
-#ifndef file_reader_H
-#define file_reader_H
+#ifndef sql_reader_H
+#define sql_reader_H
 #include "mysql.h"
 
 extern MYSQL *connection;

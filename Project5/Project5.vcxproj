@@ -143,14 +143,35 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="20171628.c" />
-    <ClCompile Include="file_reader.c" />
+    <ClCompile Include="..\..\..\..\Desktop\randgen\in_store_sales.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Desktop\randgen\online_sales.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Desktop\randgen\store_reorder.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Desktop\randgen\store_stock.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Desktop\randgen\warehouse_reorder.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Desktop\randgen\warehouse_stock.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="20171628.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="sql_reader.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="contract.txt" />
     <Text Include="ddl.txt" />
     <Text Include="customer.txt" />
-    <Text Include="warehouse_reorder.txt" />
     <Text Include="in_store_sales.txt" />
     <Text Include="online_sales.txt" />
     <Text Include="product.txt" />
@@ -158,10 +179,12 @@
     <Text Include="store_reorder.txt" />
     <Text Include="store_stock.txt" />
     <Text Include="warehouse.txt" />
+    <Text Include="warehouse_reorder.txt" />
     <Text Include="warehouse_stock.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="file_reader.h" />
+    <ClInclude Include="..\..\..\..\Desktop\randgen\global.h" />
+    <ClInclude Include="sql_reader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,15 +1,15 @@
 #include <stdio.h>
-#include "file_reader.h"
+#include "sql_reader.h"
 #include "mysql.h"
 
-char command[1024]; // ÃÑ ¸í·É¾î
+char command[16000]; // ÃÑ ¸í·É¾î
 char line[1024]; // ÇÑÁÙ 
 
 void file_reader(const char* file_name) {
 	FILE* fp;
 	
 	if ((fp = fopen(file_name, "r")) == NULL) {
-		fprintf(stdout, "file not found!\n");
+		fprintf(stdout, "file not found! %s\n", file_name);
 		exit(1);
 	}
 
@@ -36,6 +36,7 @@ void file_reader(const char* file_name) {
 				fprintf(stdout, "command: %s\n", command);
 				fprintf(stdout, "invalid command!\n");
 				printf("%d error : %s\n", mysql_errno(&conn), mysql_error(&conn));
+				return;
 			}
 			memset(command, 0, sizeof(command));
 		}

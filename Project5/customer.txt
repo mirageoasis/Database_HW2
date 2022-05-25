@@ -1,5 +1,5 @@
 #customer
-#35°³
+#40°³
 insert into customer (name, sex, location)
 values
 ('mike', 0, 'baker street'),
@@ -22,11 +22,11 @@ values
 
 ('jane', 1, 'rainforest street'),
 ('tarjan', 0, 'rainforest street'),
-('chicken', 0, 'hatchery street')
+('chicken', 0, 'hatchery street'),
 ('robot', 0, 'adult siwm street'),
 ('bitch pudding', 1, 'cake street'),
 
-('harry potter', 0, 'harry street')
+('harry potter', 0, 'harry street'),
 ('wizly', 0, 'wizly stree'),
 ('golem', 0, 'cave'),
 ('oak', 0, 'mordor street'),
@@ -42,5 +42,11 @@ values
 ('enum', 0, 'dongtan street'),
 ('kein', 0, 'twitch street'),
 ('gong', 0, 'china street'),
-('cha', 1, ' street')
+('cha', 1, ' street'),
+
+('zaria', 1, 'russia street'),
+('ana', 1, 'egypt street'),
+('road hog', 0, 'aussy street'),
+('widow maker', 1, 'franch street'),
+('simpson', 0, 'dough street')
 ;

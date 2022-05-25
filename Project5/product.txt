@@ -1,5 +1,6 @@
+
 #product
-#35°³
+#40°³
 insert into product (product_id, manufacturer, type, name, price)
 values 
 ('1', 'hanwha', 'toy', 'firework', '4'),
@@ -44,9 +45,9 @@ values
 ('34', 'hotel', 'food', 'pie 4', '8'),
 ('35', 'hotel', 'food', 'pie 5', '10'),
 
-('31', 'dice', 'game', 'battlefield 1', '4'),
-('32', 'dice', 'game', 'battlefield 2', '4'),
-('33', 'dice', 'game', 'battlefield 3', '6'),
-('34', 'dice', 'game', 'battlefield 4', '8'),
-('35', 'dice', 'game', 'battlefield 5', '10'),
+('36', 'dice', 'game', 'battlefield 1', '4'),
+('37', 'dice', 'game', 'battlefield 2', '4'),
+('38', 'dice', 'game', 'battlefield 3', '6'),
+('39', 'dice', 'game', 'battlefield 4', '8'),
+('40', 'dice', 'game', 'battlefield 5', '10')
 ;

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "mysql.h"
-#include "file_reader.h"
+#include "sql_reader.h"
 
 #pragma comment(lib, "libmysql.lib")
 
@@ -10,7 +10,28 @@ const char* pw = "password";
 const char* db = "testing"; //여기다가 원하는 스키마 이름 넣기 
 
 const char* create_table = "ddl.txt";
-const char* insert_data = "insert.txt";
+
+const char *insert_data[] = {
+	"customer.txt",
+	"product.txt",
+	"store.txt",
+	"warehouse.txt",
+
+	"contract.txt",
+	
+	"in_store_sales.txt",
+	"online_sales.txt",
+
+	"store_reorder.txt",
+	"store_stock.txt",
+	
+	"warehouse_reorder.txt",
+	"warehouse_stock.txt",
+	""
+};
+// 파일 순서 바꾸면 depedencies 때문에 터진다!
+
+
 const char* use_schema = "use testing";
 
 MYSQL* connection = NULL;
@@ -25,7 +46,7 @@ int main(void) {
 		printf("mysql_init() error!");
 
 	connection = mysql_real_connect(&conn, host, user, pw, NULL, 3306, (const char*)NULL, 0); //연결하는 함수
-	
+
 
 	// establish connection
 	if (connection == NULL)
@@ -33,17 +54,25 @@ int main(void) {
 		printf("%d ERROR : %s\n", mysql_errno(&conn), mysql_error(&conn));
 		return 1;
 	}
-	
-	
+
+
 	printf("Connection Succeed\n");
 	// 쿼리 실행
 	file_reader(create_table);// read create table
 	
-	//for(int i = 0; i < ;i++)
-	file_reader(insert_data);
+							  
+	// insert data
+	for (int i = 0; strcmp(insert_data[i], "") != 0; i++){
+		mysql_query(connection, use_schema);
+		fprintf(stdout, "insert data: %s\n", insert_data[i]);
+		file_reader(insert_data[i]);
+	}
+	// insert data
+
+
 
 	
-	mysql_query(connection, "drop SCHEMA testing"); //테이블 폭파
+	//mysql_query(connection, "drop SCHEMA testing"); //테이블 폭파
 	mysql_close(connection);
 	return 0;
 }
