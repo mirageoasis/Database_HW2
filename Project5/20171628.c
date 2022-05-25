@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "mysql.h"
 #include "sql_reader.h"
+#include "query_run.h"
 
 #pragma comment(lib, "libmysql.lib")
 
@@ -10,6 +11,7 @@ const char* pw = "password";
 const char* db = "testing"; //여기다가 원하는 스키마 이름 넣기 
 
 const char* create_table = "ddl.txt";
+const char* use_schema = "use testing";
 
 const char *insert_data[] = {
 	"customer.txt",
@@ -32,7 +34,7 @@ const char *insert_data[] = {
 // 파일 순서 바꾸면 depedencies 때문에 터진다!
 
 
-const char* use_schema = "use testing";
+
 
 MYSQL* connection = NULL;
 MYSQL conn;
@@ -58,17 +60,20 @@ int main(void) {
 
 	printf("Connection Succeed\n");
 	// 쿼리 실행
-	file_reader(create_table);// read create table
+	//file_reader(create_table);// read create table
 	
 							  
 	// insert data
-	for (int i = 0; strcmp(insert_data[i], "") != 0; i++){
+	/*for (int i = 0; strcmp(insert_data[i], "") != 0; i++){
 		mysql_query(connection, use_schema);
 		fprintf(stdout, "insert data: %s\n", insert_data[i]);
 		file_reader(insert_data[i]);
-	}
+	}*/
 	// insert data
 
+
+	// sql query go!
+	command_prompt();
 
 
 	
