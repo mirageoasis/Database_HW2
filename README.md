@@ -13,7 +13,7 @@
    - product ✔️
    - store_stock ✔️
    - warehouse_stock ✔️
-   - store_reorder 
-   - warehouse_reorder
+   - store_reorder ✔️
+   - warehouse_reorder ✔️
 
 2. sql 문 코딩하기
