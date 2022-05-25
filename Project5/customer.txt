@@ -24,9 +24,9 @@ values
 ('tarjan', 0, 'rainforest street'),
 ('chicken', 0, 'hatchery street'),
 ('robot', 0, 'adult siwm street'),
-('bitch pudding', 1, 'cake street'),
+('bitch_pudding', 1, 'cake street'),
 
-('harry potter', 0, 'harry street'),
+('harry_potter', 0, 'harry street'),
 ('wizly', 0, 'wizly stree'),
 ('golem', 0, 'cave'),
 ('oak', 0, 'mordor street'),
@@ -46,7 +46,7 @@ values
 
 ('zaria', 1, 'russia street'),
 ('ana', 1, 'egypt street'),
-('road hog', 0, 'aussy street'),
-('widow maker', 1, 'franch street'),
+('road_hog', 0, 'aussy street'),
+('widow_maker', 1, 'franch street'),
 ('simpson', 0, 'dough street')
 ;
