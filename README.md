@@ -6,8 +6,8 @@
 1. make dataset
    - customer ✔️
    - contract ✔️
-   - in_store_sales
-   - online_sales
+   - in_store_sales ✔️
+   - online_sales ✔️
    - store ✔️
    - warehouse ✔️
    - product ✔️
