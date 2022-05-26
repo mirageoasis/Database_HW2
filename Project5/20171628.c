@@ -61,14 +61,14 @@ int main(void) {
 	printf("Connection Succeed\n");
 	// Äõ¸® ½ÇÇà
 	//file_reader(create_table);// read create table
-	
-							  
-	// insert data
-	/*for (int i = 0; strcmp(insert_data[i], "") != 0; i++){
-		mysql_query(connection, use_schema);
-		fprintf(stdout, "insert data: %s\n", insert_data[i]);
-		file_reader(insert_data[i]);
-	}*/
+	//
+	//						  
+	//// insert data
+	//for (int i = 0; strcmp(insert_data[i], "") != 0; i++){
+	//	mysql_query(connection, use_schema);
+	//	fprintf(stdout, "insert data: %s\n", insert_data[i]);
+	//	file_reader(insert_data[i]);
+	//}
 	// insert data
 
 
@@ -78,6 +78,7 @@ int main(void) {
 
 	
 	//mysql_query(connection, "drop SCHEMA testing"); //Å×ÀÌºí ÆøÆÄ
+	//mysql_free_result(connection);
 	mysql_close(connection);
 	return 0;
 }

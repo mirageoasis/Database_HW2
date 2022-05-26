@@ -8,7 +8,8 @@ CREATE TABLE customer(
  name     VARCHAR(20),
  sex     INT,
  location    VARCHAR(20),
- 
+ email_address VARCHAR(50) NOT NULL,
+
  PRIMARY KEY(customer_id)
 );
 # insert 할 때 customer_id는 빼고 insert 하기 
