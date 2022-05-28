@@ -28,6 +28,12 @@ const char* prompt[] = {
 \t1. TYPE 3-1\n\
 \t2. TYPE 3-2\n\
 "
+,
+"\
+------- Subtypes in TYPE 4 ------- \n\
+\t1. TYPE 4-1\n\
+\t2. TYPE 4-2\n\
+"
 };
 // 1번 변수 받는 입력(X)
 // 1-1은 online_sales에 입력 1. 그냥 되는 경우 / 2. 안돼서 재주문 넣는 케이스
@@ -92,39 +98,25 @@ const char* type_2_query[] = {
 // 3-2 번 select 문 
 const char* type_3_query[] = {
 "\
-	SELECT name\n\
-	FROM product\n\
-	WHERE product_id IN \n\
-	(\n\
-	SELECT DISTINCT product_id \n\
-	FROM online_sales \n\
-	WHERE DATE(order_time)<DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
-	UNION\n\
-	SELECT DISTINCT product_id \n\
-	FROM in_store_sales \n\
-	WHERE DATE(order_time)<DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
-	);\n\
-"
-,
-"\
-	SELECT product_id, sum(price* amount)\n\
+	SELECT A.name, SUM(A.tot)\n\
+	FROM (\n\
+	SELECT name ,product_id, sum(price* amount) AS tot\n\
 	FROM online_sales natural join product \n\
 	WHERE DATE(order_time) < DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
 	GROUP BY product_id \n\
-	; \n\
-"
-,
-"\
-	SELECT product_id, sum(price * amount)\n\
+	UNION ALL\n\
+	SELECT name, product_id, sum(price * amount) AS tot\n\
 	FROM in_store_sales natural join product \n\
 	WHERE DATE(order_time)<DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
 	GROUP BY product_id \n\
-	;\n\
+	) AS A\
+	GROUP BY A.product_id\n\
+	ORDER BY SUM(A.tot) DESC\n\
 "
 };
 
 const char* type_3_1_query[] = {
-	"\
+"\
 	SELECT A.name, SUM(A.tot)\n\
 	FROM (\n\
 	SELECT name ,product_id, sum(price* amount) AS tot\n\
@@ -143,11 +135,52 @@ const char* type_3_1_query[] = {
 "
 };
 
+const char* type_3_2_query[] = {
+"\n\
+	SELECT B.N, B.P, B.T, B.per_rank * 100\n\
+	FROM(SELECT A.name AS N, A.product_id AS P, SUM(A.tot) AS T,PERCENT_RANK() OVER(ORDER BY SUM(A.tot) DESC) as per_rank \n\
+	FROM\n\
+	(\n\
+	SELECT name ,product_id, sum(price* amount) AS tot\n\
+	FROM online_sales natural join product \n\
+	WHERE DATE(order_time) < DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	GROUP BY product_id \n\
+	UNION ALL\n\
+	SELECT name, product_id, sum(price * amount) AS tot\n\
+	FROM in_store_sales natural join product \n\
+	WHERE DATE(order_time)<DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	GROUP BY product_id \n\
+	) AS A\n\
+	GROUP BY A.product_id\n\
+	ORDER BY SUM(A.tot) DESC\n\
+	)\n\
+	AS B\n\
+	WHERE B.per_rank <= 0.1;\n\
+"
+};
+
 // 4번 select 문 
 // 4-1 번 select 문 변수 받은 (k)
 // 4-2 번 select 문 
 
 const char* type_4_query[] = {
+"\
+	SELECT A.name, A.product_id, SUM(A.tot)\n\
+	FROM (\n\
+	SELECT name ,product_id, sum(amount) AS tot\n\
+	FROM online_sales natural join product \n\
+	WHERE DATE(order_time) < DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	GROUP BY product_id \n\
+	UNION ALL\n\
+	SELECT name, product_id, sum(amount) AS tot\n\
+	FROM in_store_sales natural join product \n\
+	WHERE DATE(order_time)<DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	GROUP BY product_id \n\
+	) AS A\
+	GROUP BY A.product_id\n\
+	ORDER BY SUM(A.tot) DESC\n\
+"
+,	
 "\
 	SELECT product_id, sum(price * amount)\n\
 	FROM online_sales natural join product \n\
@@ -165,6 +198,59 @@ const char* type_4_query[] = {
 "
 };
 
+const char* type_4_1_query[] = {
+"\
+	SELECT A.name, SUM(A.tot)\n\
+	FROM (\n\
+	SELECT name ,product_id, sum(amount) AS tot\n\
+	FROM online_sales natural join product \n\
+	WHERE DATE(order_time) < DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	GROUP BY product_id \n\
+	UNION ALL\n\
+	SELECT name, product_id, sum(amount) AS tot\n\
+	FROM in_store_sales natural join product \n\
+	WHERE DATE(order_time)<DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	GROUP BY product_id \n\
+	) AS A\
+	GROUP BY A.product_id\n\
+	ORDER BY SUM(A.tot) DESC\n\
+	LIMIT %d;\n\
+",
+"\n\
+	SELECT * FROM(\n\
+	SELECT total_bill,\n\
+	PERCENT_RANK()\n\
+	OVER(\n\
+	ORDER BY total_bill DESC) as per_rank \n\
+	FROM\n\
+	tips) a\n\
+	WHERE a.per_rank <= 0.01;\n\
+"
+};
+
+const char* type_4_2_query[] = {
+"\n\
+	SELECT B.N, B.P, B.T, B.per_rank * 100\n\
+	FROM(SELECT A.name AS N, A.product_id AS P, SUM(A.tot) AS T,PERCENT_RANK() OVER(ORDER BY SUM(A.tot) DESC) as per_rank \n\
+	FROM\n\
+	(\n\
+	SELECT name ,product_id, sum(amount) AS tot\n\
+	FROM online_sales natural join product \n\
+	WHERE DATE(order_time) < DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	GROUP BY product_id \n\
+	UNION ALL\n\
+	SELECT name, product_id, sum(amount) AS tot\n\
+	FROM in_store_sales natural join product \n\
+	WHERE DATE(order_time)<DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	GROUP BY product_id \n\
+	) AS A\n\
+	GROUP BY A.product_id\n\
+	ORDER BY SUM(A.tot) DESC\n\
+	)\n\
+	AS B\n\
+	WHERE B.per_rank <= 0.1;\n\
+"
+};
 
 // 5번 select 문
 
@@ -301,6 +387,7 @@ void command_type_1_1_function(int broken_tracking_number, int numbers) {
 		fprintf(stderr, "Error: %s\n", mysql_error(connection));
 	}
 }
+
 void command_type_1_function() {
 
 	int tracking_number;
@@ -381,8 +468,67 @@ void command_type_1_function() {
 	return;
 }
 
+void command_type_2_1_function() {
+	fprintf(stdout, "in progress!\n");
+	return;
+
+
+
+}
+
 void command_type_2_function() {
-	fprintf(stdout,"not now!\n");
+	sprintf(command, type_2_query[0]); // customer id 쿼리 찾기
+
+	fprintf(stdout, "------------Best customer of the year!------------\n\n\n");
+
+	if (mysql_query(connection, command) != 0) {
+		fprintf(stdout, "command: %s\n", command);
+		fprintf(stdout, "invalid command!\n");
+		printf("%d error : %s\n", mysql_errno(&conn), mysql_error(&conn));
+		return;
+	}
+	MYSQL_RES* result_first = mysql_use_result(connection);
+	// 다 찾아야한다 ㅋㅋㅋ 반복문으로 
+
+	if (result_first) { // if there are error in query
+
+		MYSQL_ROW row;
+		int result_num = 0;
+
+		//fprintf(stdout, "result number %ld!\n", mysql_num_rows(result)); 이거는 store result랑 함께 쓰여야함
+
+		while ((row = mysql_fetch_row(result_first))) {
+			//fprintf(stdout, "mysql_num_result %s\n", row[8]); // row[8] 이 customer_id column의 개수 만큼 결과가 나온다.
+
+
+			fprintf(stdout, "%s %s\n", row[0], row[1]);
+		}
+
+		fprintf(stdout, "\n\n------------list of products sold last year!------------\n\n\n");
+
+		//  쿼리 실행
+
+
+		fprintf(stdout, prompt[3]);
+
+		int to_subquery = 0;
+		fscanf(stdin, "%d", &to_subquery);
+
+		if (to_subquery == 1) {
+			//fprintf(stdout, "number 1!\n");
+			command_type_2_1_function();
+		}
+		else {
+			fprintf(stdout, "invalid command!\n");
+			return;
+		}
+
+	}
+	else {
+		fprintf(stderr, "Error: %s\n", mysql_error(connection));
+	}
+
+	return;
 }
 
 void command_type_3_1_function() {
@@ -425,6 +571,45 @@ void command_type_3_1_function() {
 	return;
 }
 
+void command_type_3_2_function() {
+
+	/// <summary>
+	/// 최종 결과
+	/// </summary>
+
+	//fprintf(stdout, "** Then find the top k produces by dollar amount sales **\nWhich is K? : ");
+
+
+	sprintf(command, type_3_2_query[0]); // customer id 쿼리 찾기
+
+	//fprintf(stdout, "------------top %d products------------\n\n\n", k);
+
+	if (mysql_query(connection, command) != 0) {
+		fprintf(stdout, "command: %s\n", command);
+		fprintf(stdout, "invalid command!\n");
+		printf("%d error : %s\n", mysql_errno(&conn), mysql_error(&conn));
+		return;
+	}
+
+	MYSQL_RES* result_first = mysql_use_result(connection);
+
+	if (result_first) { // if there are error in quer
+		MYSQL_ROW row;
+		while ((row = mysql_fetch_row(result_first))) {
+			//fprintf(stdout, "%s %s %s %.3s%%\n", row[0], row[1], row[2], row[3]);		
+			fprintf(stdout, "%s %s %.3s%%\n", row[0], row[2], row[3]);
+		}
+		//fprintf(stdout, "\n\n------------top %d products------------\n\n\n", k);
+
+
+	}
+	else {
+		fprintf(stderr, "Error: %s\n", mysql_error(connection));
+	}
+
+	return;
+}
+
 void command_type_3_function() {
 
 	sprintf(command, type_3_query[0]); // customer id 쿼리 찾기
@@ -452,7 +637,7 @@ void command_type_3_function() {
 			//fprintf(stdout, "mysql_num_result %s\n", row[8]); // row[8] 이 customer_id column의 개수 만큼 결과가 나온다.
 
 			
-			fprintf(stdout, "%s\n", row[0]);
+			fprintf(stdout, "%s %s\n", row[0], row[1]);
 		}
 
 		fprintf(stdout, "\n\n------------list of products sold last year!------------\n\n\n");
@@ -466,11 +651,12 @@ void command_type_3_function() {
 		fscanf(stdin, "%d", &to_subquery);
 
 		if (to_subquery == 1) {
-			fprintf(stdout, "number 1!\n");
+			//fprintf(stdout, "number 1!\n");
 			command_type_3_1_function();
 		}
 		else if (to_subquery == 2) {
-			fprintf(stdout, "number 2!\n");
+			//fprintf(stdout, "number 2!\n");
+			command_type_3_2_function();
 		}
 		else {
 			fprintf(stdout, "invalid command!\n");
@@ -486,12 +672,90 @@ void command_type_3_function() {
 	return;
 }
 
+void command_type_4_1_function() {
+
+	/// <summary>
+	/// 최종 결과
+	/// </summary>
+
+	fprintf(stdout, "** Then find the top k produces by dollar amount sales **\nWhich is K? : ");
+
+	int k;
+	fscanf(stdin, "%d", &k);
+
+	sprintf(command, type_4_1_query[0], k); // customer id 쿼리 찾기
+
+	fprintf(stdout, "------------top %d products------------\n\n\n", k);
+
+	if (mysql_query(connection, command) != 0) {
+		fprintf(stdout, "command: %s\n", command);
+		fprintf(stdout, "invalid command!\n");
+		printf("%d error : %s\n", mysql_errno(&conn), mysql_error(&conn));
+		return;
+	}
+
+	MYSQL_RES* result_first = mysql_use_result(connection);
+
+	if (result_first) { // if there are error in quer
+		MYSQL_ROW row;
+		while ((row = mysql_fetch_row(result_first))) {
+			fprintf(stdout, "%s %s\n", row[0], row[1]);
+		}
+		fprintf(stdout, "\n\n------------top %d products------------\n\n\n", k);
+
+
+	}
+	else {
+		fprintf(stderr, "Error: %s\n", mysql_error(connection));
+	}
+
+	return;
+}
+
+void command_type_4_2_function() {
+
+	/// <summary>
+	/// 최종 결과
+	/// </summary>
+
+	//fprintf(stdout, "** Then find the top k produces by dollar amount sales **\nWhich is K? : ");
+
+
+	sprintf(command, type_4_2_query[0]); // customer id 쿼리 찾기
+
+	//fprintf(stdout, "------------top %d products------------\n\n\n", k);
+
+	if (mysql_query(connection, command) != 0) {
+		fprintf(stdout, "command: %s\n", command);
+		fprintf(stdout, "invalid command!\n");
+		printf("%d error : %s\n", mysql_errno(&conn), mysql_error(&conn));
+		return;
+	}
+
+	MYSQL_RES* result_first = mysql_use_result(connection);
+
+	if (result_first) { // if there are error in quer
+		MYSQL_ROW row;
+		while ((row = mysql_fetch_row(result_first))) {
+			//fprintf(stdout, "%s %s %s %.3s%%\n", row[0], row[1], row[2], row[3]);
+			fprintf(stdout, "%s %s %.3s%%\n", row[0], row[2], row[3]);
+		}
+		//fprintf(stdout, "\n\n------------top %d products------------\n\n\n", k);
+
+
+	}
+	else {
+		fprintf(stderr, "Error: %s\n", mysql_error(connection));
+	}
+
+	return;
+}
 
 void command_type_4_function() {
 
 	sprintf(command, type_4_query[0]); // customer id 쿼리 찾기
 
-	fprintf(stdout, "------------list of products sold last year!------------\n\n\n");
+	fprintf(stdout, "------------list of products sold last year! unit sales------------\n\n\n");
 
 	if (mysql_query(connection, command) != 0) {
 		fprintf(stdout, "command: %s\n", command);
@@ -507,94 +771,37 @@ void command_type_4_function() {
 
 		MYSQL_ROW row;
 		int result_num = 0;
-		while ((row = mysql_fetch_row(result_first))) {
-			fprintf(stdout, "%s %s\n", row[0], row[1]);
-		}
-
-		fprintf(stdout, "\n\n------------list of products sold last year!------------\n\n\n");
-
-		//  쿼리 실행
-
-	}
-	else {
-		fprintf(stderr, "Error: %s\n", mysql_error(connection));
-	}
-	return;
-	sprintf(command, type_4_query[1]); // customer id 쿼리 찾기
-
-	if (mysql_query(connection, command) != 0) {
-		fprintf(stdout, "command: %s\n", command);
-		fprintf(stdout, "invalid command!\n");
-		printf("%d error : %s\n", mysql_errno(&conn), mysql_error(&conn));
-		return;
-	}
-
-	result_first = mysql_use_result(connection);
-	// 다 찾아야한다 ㅋㅋㅋ 반복문으로 
-
-	if (result_first) { // if there are error in query
-
-		MYSQL_ROW row;
-		int result_num = 0;
 
 		//fprintf(stdout, "result number %ld!\n", mysql_num_rows(result)); 이거는 store result랑 함께 쓰여야함
 
 		while ((row = mysql_fetch_row(result_first))) {
-			//fprintf(stdout, "mysql_num_result %s\n", row[8]); // row[8] 이 customer_id column의 개수 만큼 결과가 나온다.
-
-
-			fprintf(stdout, "%s %s\n", row[0], row[1]);
+			fprintf(stdout, "%s %s\n", row[0], row[2]);
+			//fprintf(stdout, "%s %s %s\n", row[0], row[1], row[2]);
 		}
 
-		fprintf(stdout, "\n\n------------list of products sold last year!------------\n\n\n");
+		fprintf(stdout, "\n\n------------list of products sold last year! unit sales------------\n\n\n");
 
 		//  쿼리 실행
 
-	}
-	else {
-		fprintf(stderr, "Error: %s\n", mysql_error(connection));
-	}
 
-	sprintf(command, type_4_query[2]); // customer id 쿼리 찾기
-
-	if (mysql_query(connection, command) != 0) {
-		fprintf(stdout, "command: %s\n", command);
-		fprintf(stdout, "invalid command!\n");
-		printf("%d error : %s\n", mysql_errno(&conn), mysql_error(&conn));
-		return;
-	}
-
-	result_first = mysql_use_result(connection);
-	// 다 찾아야한다 ㅋㅋㅋ 반복문으로 
-
-	if (result_first) { // if there are error in query
-
-		MYSQL_ROW row;
-		int result_num = 0;
-
-		//fprintf(stdout, "result number %ld!\n", mysql_num_rows(result)); 이거는 store result랑 함께 쓰여야함
-
-		while ((row = mysql_fetch_row(result_first))) {
-			//fprintf(stdout, "mysql_num_result %s\n", row[8]); // row[8] 이 customer_id column의 개수 만큼 결과가 나온다.
-
-
-			fprintf(stdout, "%s %s\n", row[0], row[1]);
-		}
-
-		fprintf(stdout, "\n\n------------list of products sold last year!------------\n\n\n");
-
-		//  쿼리 실행
-		return;
-		MYSQL_RES* result_second = mysql_use_result(connection); // 받아온 email 결과를 use 한다는 선언
-
-		while ((row = mysql_fetch_row(result_second))) {
-			/// 반복문 돌면서 email출력
-			fprintf(stdout, "email for customer is %s\n", row[0]);
-		}
-		fprintf(stdout, prompt[1]);
+		fprintf(stdout, prompt[4]);
 
 		int to_subquery = 0;
 		fscanf(stdin, "%d", &to_subquery);
+
+		if (to_subquery == 1) {
+			//fprintf(stdout, "number 1!\n");
+			command_type_4_1_function();
+		}
+		else if (to_subquery == 2) {
+			//fprintf(stdout, "number 2!\n");
+			command_type_4_2_function();
+		}
+		else {
+			fprintf(stdout, "invalid command!\n");
+			return;
+		}
+
 
 	}
 	else {
@@ -603,8 +810,6 @@ void command_type_4_function() {
 
 	return;
 }
-
-
 
 void run_query(int command_number) {
 	if (!command_number)
