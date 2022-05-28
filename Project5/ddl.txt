@@ -65,12 +65,21 @@ CREATE TABLE in_store_sales(
  FOREIGN KEY(store_id) REFERENCES store(store_id)
 );
 
+
+#tracking number
+CREATE TABLE tracking_id(
+	tracking_number	INT NOT NULL,
+	ETA				TIMESTAMP NOT NULL,
+	time_arrived	TIMESTAMP,
+	
+	PRIMARY KEY(tracking_number)
+);
+
+
 #online_sales
 CREATE TABLE online_sales(
  order_id			INT NOT NULL AUTO_INCREMENT,
- ETA				TIMESTAMP NOT NULL,
  order_time			TIMESTAMP NOT NULL,
- time_arrived		TIMESTAMP,
  card_number		INT,
  amount				INT NOT NULL,
  tracking_number	INT NOT NULL,
@@ -79,10 +88,12 @@ CREATE TABLE online_sales(
  warehouse_id		INT NOT NULL,
 
  PRIMARY KEY(order_id),
+ FOREIGN KEY(tracking_number) REFERENCES tracking_id(tracking_number),
  FOREIGN KEY(product_id) REFERENCES product(product_id),
  FOREIGN KEY(customer_id) REFERENCES customer(customer_id),
  FOREIGN KEY(warehouse_id) REFERENCES warehouse(warehouse_id)
 );
+
 
 #store_stock
 CREATE TABLE store_stock(

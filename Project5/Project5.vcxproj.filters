@@ -80,15 +80,18 @@
     <Text Include="warehouse_stock.txt">
       <Filter>리소스 파일</Filter>
     </Text>
+    <Text Include="tracking_id.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sql_reader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Desktop\randgen\global.h">
+    <ClInclude Include="query_run.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="query_run.h">
+    <ClInclude Include="global.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

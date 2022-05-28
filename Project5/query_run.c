@@ -1,6 +1,7 @@
 #include "query_run.h"
 
-const char* prompt = "\
+const char* prompt[] = {
+"\
 ------- SELECT QUERY TYPES ------- \n\n\
 \t1. TYPE 1\n\
 \t2. TYPE 2\n\
@@ -10,7 +11,13 @@ const char* prompt = "\
 \t6. TYPE 6\n\
 \t7. TYPE 7\n\
 \t0. QUIT\n\
-";
+"
+,
+"\
+------- Subtypes in TYPE 1 ------- \n\
+\t1. TYPE 1-1\n\
+"
+};
 // 1번 변수 받는 입력(X)
 // 1-1은 online_sales에 입력 1. 그냥 되는 경우 / 2. 안돼서 재주문 넣는 케이스
 
@@ -20,21 +27,41 @@ const char* prompt = "\
 
 const char* type_1_query[] = {
 "\
-	SELECT customer_id\n\
+	SELECT * \n\
 	FROM online_sales\n\
 	WHERE tracking_number=%d;\
-	",
-
+"
+,
 "\
 	SELECT email_address\n\
 	FROM customer\n\
-	WHERE customer_id=%d;\
+	WHERE customer_id in (%s);\
 "
+
 };
 
 const char* type_1_1_query[] = {
-	"SELECT ",
-	""
+"\
+	SELECT *\n\
+	FROM tracking_id\n\
+	WHERE tracking_number=%d;\
+"
+,
+"\
+	INSERT INTO tracking_id(tracking_number, ETA, time_arrived)\n\
+	VALUES(%d, '%s', '%s');\
+"
+,
+"\
+	SELECT *\n\
+	FROM online_sales\n\
+	WHERE tracking_number=%d;\
+"	
+,
+"\
+	INSERT INTO online_sales(order_time, card_number, amount, tracking_number, product_id, customer_id, warehouse_id)\n\
+	VALUES('%s', '%s', '%s', %d, '%s', '%s', '%s');\
+"
 };
 
 // 2번 select 문
@@ -55,63 +82,234 @@ const char* type_1_1_query[] = {
 
 char command[1024];
 
-int subquery_command_list[4] = {1, 2, 3, 4 };
-int number_of_subquery[4] = {1, 1, 2, 2};
+int subquery_command_list[4] = { 1, 2, 3, 4 };
+int number_of_subquery[4] = { 1, 1, 2, 2 };
 
 //1,2,3, 4의 경우는 query_result set을 저장하고 있다가
 
 // sub 명령어가 수행되면 걍 중첩 쿼리 만들어서 숫자만 집어 넣기 ㄱㄱ?
+
+void command_type_1_1_function(int broken_tracking_number, int numbers) {
+	
+
+
+
+	int new_tracking_number;
+	srand(time(NULL));
+	while (1) {
+		new_tracking_number = rand();
+		sprintf(command, type_1_1_query[0], new_tracking_number); // customer id 쿼리 찾기
+		if (mysql_query(connection, command) != 0) {
+			fprintf(stdout, "command: %s\n", command);
+			fprintf(stdout, "invalid command!\n");
+			printf("%d error : %s\n", mysql_errno(&conn), mysql_error(&conn));
+			return;
+		}
+		MYSQL_RES* tracking_result = mysql_use_result(connection);
+
+		while (mysql_fetch_row(tracking_result)) {
+		}
+		// 해당 sql 이 정보를 가지고 있는지 테스트 없다면 break문을 수행
+
+		if (!mysql_num_rows(tracking_result)) { // 없으면 그거로 tracking_number 결정
+			//fprintf(stdout, "good to go tracking number %d\n", new_tracking_number);
+			break;
+		}
+	}
+
+	// 시간 새로 만드는 중
+	time_t rawtime; // 현재 시간 받아줄 구조체
+	
+	struct tm* new_ETA_tm;
+	struct tm* now_tm;
+	char new_ETA_char[20] = "";
+	char now_char[20] = "";
+
+	time(&rawtime);
+	now_tm = localtime(&rawtime);
+	sprintf(now_char, "%d-%02d-%02d %02d:%02d:%02d",now_tm->tm_year + 1900, now_tm->tm_mon, now_tm->tm_mday, now_tm->tm_hour, now_tm->tm_min, now_tm->tm_sec);
+	sprintf(new_ETA_char, "%d-%02d-%02d %02d:%02d:%02d", now_tm->tm_year + 1900 , now_tm->tm_mon + 1, now_tm->tm_mday, 0, 0, 0);
+	//fprintf(stdout, "now clock is %s\n", now_char);
+	//fprintf(stdout, "new ETA is %s\n", new_ETA_char);
+	sprintf(command, type_1_1_query[1], new_tracking_number, new_ETA_char,"0000-00-00 00:00:00");
+
+	if (mysql_query(connection, command) != 0) {
+		fprintf(stdout, "command: %s\n", command);
+		fprintf(stdout, "invalid command!\n");
+		printf("%d error : %s\n", mysql_errno(&conn), mysql_error(&conn));
+		return;
+	}
+
+
+	// command 설정하기
+	sprintf(command, type_1_1_query[2], broken_tracking_number);
+	// 1번 쿼리문 그대로 실행 망가진 택배 찾기
+	
+	if (mysql_query(connection, command) != 0) {
+		fprintf(stdout, "command: %s\n", command);
+		fprintf(stdout, "invalid command!\n");
+		printf("%d error : %s\n", mysql_errno(&conn), mysql_error(&conn));
+		return;
+	}
+
+	MYSQL_RES* result_first = mysql_use_result(connection);
+
+	if (result_first) { // if there are error in query
+
+		MYSQL_ROW row;
+		char customer_list_char[1024];
+		int count = 0;
+
+		struct tm temp[3];
+
+		memset(customer_list_char, 0, sizeof(customer_list_char));
+
+		//fprintf(stdout, "result number %ld!\n", mysql_num_rows(result)); 이거는 store result랑 함께 쓰여야함
+
+
+		memset(command, 0, sizeof(command));
+		while ((row = mysql_fetch_row(result_first))) {
+			
+			//  이거 고쳐야함 	1번 고치고 new_tracking_number
+			//row [1]을 새로 넣기
+			sprintf(command + strlen(command), type_1_1_query[3], now_char, row[2], row[3], new_tracking_number,row[5], row[6], row[7]); // 커맨드에 insert into 넣기
+			fprintf(stdout, "created new order tracking number of %d\n", new_tracking_number);
+			//fprintf(stdout, "%s\n", command);
+			 //  쿼리 실행
+
+		}
+		fprintf(stdout, "\n\n\n", new_tracking_number);
+		//2022-05-14 00:00:00 
+
+	
+		if (mysql_query(connection, command) != 0) {
+			fprintf(stdout, "command: %s\n", command);
+			fprintf(stdout, "invalid command!\n");
+			printf("%d error : %s\n", mysql_errno(&conn), mysql_error(&conn));
+			return;
+		}
+
+
+		if (!mysql_num_rows(result_first)) {
+			fprintf(stdout, "no result\n");
+			return;
+		}// 결과가 존재하지 않으면 알림 띄우기
+	}
+	else {
+		fprintf(stderr, "Error: %s\n", mysql_error(connection));
+	}
+}
+void command_type_1_function() {
+
+	int tracking_number;
+	fprintf(stdout, "which is X? : ");
+	fscanf(stdin, "%d", &tracking_number);
+
+	sprintf(command, type_1_query[0], tracking_number); // customer id 쿼리 찾기
+
+	if (mysql_query(connection, command) != 0) {
+		fprintf(stdout, "command: %s\n", command);
+		fprintf(stdout, "invalid command!\n");
+		printf("%d error : %s\n", mysql_errno(&conn), mysql_error(&conn));
+		return;
+	}
+
+
+	MYSQL_RES* result_first = mysql_use_result(connection);
+	// 다 찾아야한다 ㅋㅋㅋ 반복문으로 
+
+	if (result_first) { // if there are error in query
+
+		MYSQL_ROW row;
+		int result_num = 0;
+		char customer_list_char[1024];
+		memset(customer_list_char, 0, sizeof(customer_list_char));
+		
+		//fprintf(stdout, "result number %ld!\n", mysql_num_rows(result)); 이거는 store result랑 함께 쓰여야함
+
+		while ((row = mysql_fetch_row(result_first))) {
+			//fprintf(stdout, "mysql_num_result %s\n", row[8]); // row[8] 이 customer_id column의 개수 만큼 결과가 나온다.
+			
+			assert(atoi(row[0]) != 0);
+			result_num++;
+			sprintf(customer_list_char + strlen(customer_list_char), "%s,", row[6]);
+		}
+		
+		if (!mysql_num_rows(result_first)) {
+			fprintf(stdout, "no result\n", mysql_num_rows(result_first));
+			return;
+		}// 결과가 존재하지 않으면 함수 중단
+
+		customer_list_char[strlen(customer_list_char) - 1] = '\0'; // 마지막에 쉼표 없에기
+
+		sprintf(command, type_1_query[1], customer_list_char); // 쿼리 최종 완성
+		
+		//fprintf(stdout, "최종 쿼리 %s\n", command);
+		
+		// 고객 id 받아오고 email도 받아올 차례
+
+
+		if (mysql_query(connection, command) != 0) {
+			fprintf(stdout, "command: %s\n", command);
+			fprintf(stdout, "invalid command!\n");
+			printf("%d error : %s\n", mysql_errno(&conn), mysql_error(&conn));
+			return;
+		} //  쿼리 실행
+
+		MYSQL_RES* result_second = mysql_use_result(connection); // 받아온 email 결과를 use 한다는 선언
+
+		while ((row = mysql_fetch_row(result_second))) {
+			/// 반복문 돌면서 email출력
+			fprintf(stdout, "email for customer is %s\n", row[0]);
+		}
+		fprintf(stdout, prompt[1]);
+
+		int to_subquery = 0;
+		fscanf(stdin, "%d", &to_subquery);
+
+		if (to_subquery == 1)
+			command_type_1_1_function(tracking_number, result_num);
+		else
+			fprintf(stdout, "invalid command!\n\n\n");
+	}
+	else {
+		fprintf(stderr, "Error: %s\n", mysql_error(connection));
+	}
+
+	return;
+}
 
 
 void run_query(int command_number) {
 	if (!command_number)
 		return;
 	assert(command_number != 0);
-	
+
 	mysql_query(connection, use_schema);
 
-	if (command_number == 1) {
-		
-		int tracking_number;
-		fprintf(stdout, "which is X? : ");
-		fscanf(stdin, "%d", &tracking_number);
+	switch (command_number) {
+	case 1:
+		command_type_1_function();
+		break;
+	case 2:
+		break;
+	case 3:
+		break;
+	case 4:
+		break;
+	case 5:
+		break;
+	case 6:
+		break;
+	case 7:
+		break;
+	default:
+		fprintf(stdout, "invalid command!\n");
 
-		sprintf(command, type_1_query[0], tracking_number); // customer id 쿼리 찾기
-
-		if (mysql_query(connection, command) != 0) {
-			fprintf(stdout, "command: %s\n", command);
-			fprintf(stdout, "invalid command!\n");
-			printf("%d error : %s\n", mysql_errno(&conn), mysql_error(&conn));
-			return;
-		}
-	
-		MYSQL_ROW* customer_id_string = mysql_fetch_row(mysql_store_result(connection));// 쿼리 저장하고 가져오기
-		// 다 찾아야한다 ㅋㅋㅋ 반복문으로 
-		int customer_id = atoi(customer_id_string[0]);
-		// 다 찾아야한다 ㅋㅋㅋ 반복문으로 
-
-		//fprintf(stdout, "customer id is: %s\n", customer_id_string[0]);
-		fprintf(stdout, "customer id is: %d\n", customer_id);
-		
-		assert(customer_id != 0);
-		//strtol 사용? 없는 경우 어캄?
-		sprintf(command, type_1_query[1], customer_id); // 쿼리 최종 완성
-		
-		//fprintf(stdout, "command: %s\n", command);
-
-		if (mysql_query(connection, command) != 0) {
-			fprintf(stdout, "command: %s\n", command);
-			fprintf(stdout, "invalid command!\n");
-			printf("%d error : %s\n", mysql_errno(&conn), mysql_error(&conn));
-			return;
-		}
-
-		MYSQL_ROW* email_string = mysql_fetch_row(mysql_store_result(connection));// 쿼리 저장하고 가져오기
-		// 자료에서 tracking number 는 여러 customer 에 적용 가능 
-		fprintf(stdout, "%s\n", email_string[0]);
-		// 다 찾아야한다 ㅋㅋㅋ 반복문으로 
 	}
-	// 함수로 분리하기
+
+
+
 
 	return;
 }
@@ -131,10 +329,10 @@ void command_prompt() {
 
 	int user_command_number = 0;
 
-	while (1){
-		fprintf(stdout, prompt);
+	while (1) {
+		fprintf(stdout, prompt[0]);
 		fscanf(stdin, "%d", &user_command_number);
-		
+
 		if (user_command_number == 0)
 			break;
 

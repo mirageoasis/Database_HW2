@@ -2,6 +2,7 @@
 #include "mysql.h"
 #include "sql_reader.h"
 #include "query_run.h"
+#include "global.h"
 
 #pragma comment(lib, "libmysql.lib")
 
@@ -18,6 +19,8 @@ const char *insert_data[] = {
 	"product.txt",
 	"store.txt",
 	"warehouse.txt",
+
+	"tracking_id.txt",
 
 	"contract.txt",
 	
@@ -47,7 +50,7 @@ int main(void) {
 	if (mysql_init(&conn) == NULL)
 		printf("mysql_init() error!");
 
-	connection = mysql_real_connect(&conn, host, user, pw, NULL, 3306, (const char*)NULL, 0); //연결하는 함수
+	connection = mysql_real_connect(&conn, host, user, pw, NULL, 3306, (const char*)NULL, CLIENT_MULTI_STATEMENTS | CLIENT_MULTI_RESULTS); //연결하는 함수
 
 
 	// establish connection
@@ -60,15 +63,14 @@ int main(void) {
 
 	printf("Connection Succeed\n");
 	// 쿼리 실행
-	//file_reader(create_table);// read create table
-	//
+	file_reader(create_table);// read create table
 	//						  
 	//// insert data
-	//for (int i = 0; strcmp(insert_data[i], "") != 0; i++){
-	//	mysql_query(connection, use_schema);
-	//	fprintf(stdout, "insert data: %s\n", insert_data[i]);
-	//	file_reader(insert_data[i]);
-	//}
+	for (int i = 0; strcmp(insert_data[i], "") != 0; i++){
+		mysql_query(connection, use_schema);
+		fprintf(stdout, "insert data: %s\n", insert_data[i]);
+		file_reader(insert_data[i]);
+	}
 	// insert data
 
 
@@ -77,7 +79,7 @@ int main(void) {
 
 
 	
-	//mysql_query(connection, "drop SCHEMA testing"); //테이블 폭파
+	mysql_query(connection, "drop SCHEMA testing"); //테이블 폭파
 	//mysql_free_result(connection);
 	mysql_close(connection);
 	return 0;

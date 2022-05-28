@@ -179,12 +179,13 @@
     <Text Include="store.txt" />
     <Text Include="store_reorder.txt" />
     <Text Include="store_stock.txt" />
+    <Text Include="tracking_id.txt" />
     <Text Include="warehouse.txt" />
     <Text Include="warehouse_reorder.txt" />
     <Text Include="warehouse_stock.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\Desktop\randgen\global.h" />
+    <ClInclude Include="global.h" />
     <ClInclude Include="query_run.h" />
     <ClInclude Include="sql_reader.h" />
   </ItemGroup>
