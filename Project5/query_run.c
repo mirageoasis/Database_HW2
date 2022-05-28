@@ -320,17 +320,21 @@ const char* type_5_query[] = {
 	)\n\
 	;\n\
 "
-,
+};
+
+
+// 6번 select 문
+const char* type_6_query[] = {
 "\
-	SELECT DISTINCT product_id\n\
-	FROM store_stock NATURAL JOIN store\n\
-	WHERE store_stock.amount > 0 AND store.region='California'\n\
+	SELECT online_sales.order_id, tracking_id.tracking_number,tracking_id.ETA, tracking_id.time_arrived\n\
+	FROM online_sales NATURAL JOIN tracking_id\n\
+	WHERE (tracking_id.ETA < tracking_id.time_arrived) OR (current_timestamp() > tracking_id.ETA AND tracking_id.time_arrived='0000-00-00 00:00:00')\n\
+	ORDER BY order_id\n\
 	;\n\
 "
 };
 
 
-// 6번 select 문
 // 7번 selec 문
 
 char command[1024];
@@ -936,6 +940,50 @@ void command_type_5_function() {
 	return;
 }
 
+void command_type_6_function() {
+
+
+	sprintf(command, type_6_query[0]); // customer id 쿼리 찾기
+	fprintf(stdout, "------------TYPE 6------------\n\n\n");
+	fprintf(stdout, "------------these pacakages were not delivered in time------------\n\n\n");
+
+	if (mysql_query(connection, command) != 0) {
+		fprintf(stdout, "command: %s\n", command);
+		fprintf(stdout, "invalid command!\n");
+		printf("%d error : %s\n", mysql_errno(&conn), mysql_error(&conn));
+		return;
+	}
+
+	MYSQL_RES* result_first = mysql_use_result(connection);
+	// 다 찾아야한다 ㅋㅋㅋ 반복문으로 
+
+	if (result_first) { // if there are error in query
+
+		MYSQL_ROW row;
+		int result_num = 0;
+
+		//fprintf(stdout, "result number %ld!\n", mysql_num_rows(result)); 이거는 store result랑 함께 쓰여야함
+
+		while ((row = mysql_fetch_row(result_first))) {
+			//fprintf(stdout, "%s\n", row[0]);
+			if(strcmp(row[3], "0000-00-00 00:00:00") == 0) // 아직도 도착 안한 케이스
+				fprintf(stdout, "order '%03s' late on arrival! ETA was %.10s but has not arrived by now\n", row[0], row[2]);
+			else
+				fprintf(stdout, "order '%03s' late on arrival! ETA was %.10s but arrived at %.10s\n", row[0], row[2], row[3]);
+			//fprintf(stdout, "%s %s %s %s\n", row[0], row[1], row[2], row[3]);
+		}
+
+		fprintf(stdout, "\n\n------------these pacakages were not delivered in time------------\n\n\n");
+
+		//  쿼리 실행
+
+	}
+	else {
+		fprintf(stderr, "Error: %s\n", mysql_error(connection));
+	}
+
+	return;
+}
 
 void run_query(int command_number) {
 	if (!command_number)
@@ -961,6 +1009,7 @@ void run_query(int command_number) {
 		command_type_5_function();
 		break;
 	case 6:
+		command_type_6_function();
 		break;
 	case 7:
 		break;
