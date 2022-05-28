@@ -20,8 +20,8 @@
 # 만약에 조교 공지뜨면 customer 수정 할 것! 연락처 관련!
 
 2. sql 문 코딩하기
-   - (TYPE 1) Assume the package shipped by USPS with tracking number X is reported to have been destroyed in an accident. Find the contact information for the customer.(1)
-   - (TYPE 1-1) Then find the contents of that shipment and create a new shipment of replacement items. (2)
+   - (TYPE 1) Assume the package shipped by USPS with tracking number X is reported to have been destroyed in an accident. Find the contact information for the customer.(1)✔️
+   - (TYPE 1-1) Then find the contents of that shipment and create a new shipment of replacement items. (2)✔️
    - (TYPE 2) Find the customer who has bought the most (by price) in the past year. (3)
    - (TYPE 2-1) Then find the product that the customer bought the most. (4)
    - (TYPE 3) Find all products sold in the past year. (5)
