@@ -22,9 +22,9 @@
 2. sql 문 코딩하기
    - (TYPE 1) Assume the package shipped by USPS with tracking number X is reported to have been destroyed in an accident. Find the contact information for the customer.(1)✔️
    - (TYPE 1-1) Then find the contents of that shipment and create a new shipment of replacement items. (2)✔️
-   - (TYPE 2) Find the customer who has bought the most (by price) in the past year. (3)
+   - (TYPE 2) Find the customer who has bought the most (by price) in the past year. (3) 
    - (TYPE 2-1) Then find the product that the customer bought the most. (4)
-   - (TYPE 3) Find all products sold in the past year. (5)
+   - (TYPE 3) Find all products sold in the past year. (5) ✔️
    - (TYPE 3-1) Then find the top k products by dollar-amount sold. (6)
    - (TYPE 3-2) And then find the top 10% products by dollar-amount sold. (7)
    - (TYPE 4) Find all products by unit sales in the past year. (8)
