@@ -310,10 +310,21 @@ const char* type_4_2_query[] = {
 
 const char* type_5_query[] = {
 "\
-	SELECT product_id, sum(price * amount)\n\
-	FROM online_sales natural join product \n\
-	WHERE DATE(order_time)<DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
-	GROUP BY product_id \n\
+	SELECT product_id, name\n\
+	FROM product \n\
+	WHERE product.product_id NOT IN\n\
+	(\n\
+	SELECT DISTINCT product_id\n\
+	FROM store_stock NATURAL JOIN store\n\
+	WHERE store_stock.amount > 0 AND store.region='California'\n\
+	)\n\
+	;\n\
+"
+,
+"\
+	SELECT DISTINCT product_id\n\
+	FROM store_stock NATURAL JOIN store\n\
+	WHERE store_stock.amount > 0 AND store.region='California'\n\
 	;\n\
 "
 };
@@ -885,11 +896,10 @@ void command_type_4_function() {
 
 void command_type_5_function() {
 
-	return;
-
+	
 	sprintf(command, type_5_query[0]); // customer id 쿼리 찾기
-
-	fprintf(stdout, "------------list of products sold last year! unit sales------------\n\n\n");
+	fprintf(stdout, "------------TYPE 5------------\n\n\n");
+	fprintf(stdout, "------------products out of stock at every store in California------------\n\n\n");
 
 	if (mysql_query(connection, command) != 0) {
 		fprintf(stdout, "command: %s\n", command);
@@ -909,11 +919,12 @@ void command_type_5_function() {
 		//fprintf(stdout, "result number %ld!\n", mysql_num_rows(result)); 이거는 store result랑 함께 쓰여야함
 
 		while ((row = mysql_fetch_row(result_first))) {
-			fprintf(stdout, "%s %s\n", row[0], row[2]);
-			//fprintf(stdout, "%s %s %s\n", row[0], row[1], row[2]);
+			//fprintf(stdout, "%s\n", row[0]);
+			fprintf(stdout, "product '%s' is out of stock\n", row[1]);
+			//fprintf(stdout, "%s %s %s %s\n", row[0], row[1], row[2], row[3]);
 		}
 
-		fprintf(stdout, "\n\n------------list of products sold last year! unit sales------------\n\n\n");
+		fprintf(stdout, "\n\n------------products out of stock at every store in California------------\n\n\n");
 
 		//  쿼리 실행
 

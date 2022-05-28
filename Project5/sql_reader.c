@@ -2,7 +2,7 @@
 #include "sql_reader.h"
 #include "mysql.h"
 
-char command[16000]; // 총 명령어
+char command[1000000]; // 총 명령어
 char line[1024]; // 한줄 
 
 void file_reader(const char* file_name) {
