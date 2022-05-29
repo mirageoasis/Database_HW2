@@ -90,12 +90,12 @@ const char* type_2_query[] =  {
 	FROM customer natural join (\n\
 	SELECT customer_id ,product_id, sum(price* amount) AS tot\n\
 	FROM online_sales natural join product \n\
-	WHERE DATE(order_time) < DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
 	GROUP BY customer_id \n\
 	UNION ALL\n\
 	SELECT customer_id , product_id, sum(price * amount) AS tot\n\
 	FROM in_store_sales natural join product \n\
-	WHERE DATE(order_time)<DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
 	GROUP BY customer_id \n\
 	) AS A\
 	GROUP BY A.customer_id\n\
@@ -122,12 +122,12 @@ const char* type_2_1_query[] = {
 	FROM customer natural join (\n\
 	SELECT customer_id ,product_id, name AS N, sum(amount) AS tot\n\
 	FROM online_sales natural join product \n\
-	WHERE DATE(order_time)<DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00') AND customer_id=%d \n\
+	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
 	GROUP BY product_id \n\
 	UNION ALL\n\
 	SELECT customer_id , product_id, name AS N, sum(amount) AS tot\n\
 	FROM in_store_sales natural join product \n\
-	WHERE DATE(order_time)<DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00') AND customer_id=%d \n\
+	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
 	GROUP BY product_id \n\
 	) AS A\
 	ORDER BY A.tot DESC\n\
@@ -136,12 +136,12 @@ const char* type_2_1_query[] = {
 "\
 	SELECT customer_id ,product_id, sum(amount) AS tot\n\
 	FROM online_sales natural join product \n\
-	WHERE DATE(order_time)<DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00') AND customer_id=%d \n\
+	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
 	GROUP BY product_id\n\
 	UNION ALL\n\
 	SELECT customer_id , product_id, sum(amount) AS tot\n\
 	FROM in_store_sales natural join product \n\
-	WHERE DATE(order_time)<DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00') AND customer_id=%d \n\
+	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
 	GROUP BY product_id\n\
 	;\n\
 "
@@ -156,12 +156,12 @@ const char* type_3_query[] = {
 	FROM (\n\
 	SELECT name ,product_id, sum(price* amount) AS tot\n\
 	FROM online_sales natural join product \n\
-	WHERE DATE(order_time) < DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
 	GROUP BY product_id \n\
 	UNION ALL\n\
 	SELECT name, product_id, sum(price * amount) AS tot\n\
 	FROM in_store_sales natural join product \n\
-	WHERE DATE(order_time)<DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
 	GROUP BY product_id \n\
 	) AS A\
 	GROUP BY A.product_id\n\
@@ -175,12 +175,12 @@ const char* type_3_1_query[] = {
 	FROM (\n\
 	SELECT name ,product_id, sum(price* amount) AS tot\n\
 	FROM online_sales natural join product \n\
-	WHERE DATE(order_time) < DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
 	GROUP BY product_id \n\
 	UNION ALL\n\
 	SELECT name, product_id, sum(price * amount) AS tot\n\
 	FROM in_store_sales natural join product \n\
-	WHERE DATE(order_time)<DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
 	GROUP BY product_id \n\
 	) AS A\
 	GROUP BY A.product_id\n\
@@ -197,12 +197,12 @@ const char* type_3_2_query[] = {
 	(\n\
 	SELECT name ,product_id, sum(price* amount) AS tot\n\
 	FROM online_sales natural join product \n\
-	WHERE DATE(order_time) < DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
 	GROUP BY product_id \n\
 	UNION ALL\n\
 	SELECT name, product_id, sum(price * amount) AS tot\n\
 	FROM in_store_sales natural join product \n\
-	WHERE DATE(order_time)<DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
 	GROUP BY product_id \n\
 	) AS A\n\
 	GROUP BY A.product_id\n\
@@ -223,12 +223,12 @@ const char* type_4_query[] = {
 	FROM (\n\
 	SELECT name ,product_id, sum(amount) AS tot\n\
 	FROM online_sales natural join product \n\
-	WHERE DATE(order_time) < DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
 	GROUP BY product_id \n\
 	UNION ALL\n\
 	SELECT name, product_id, sum(amount) AS tot\n\
 	FROM in_store_sales natural join product \n\
-	WHERE DATE(order_time)<DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
 	GROUP BY product_id \n\
 	) AS A\
 	GROUP BY A.product_id\n\
@@ -258,12 +258,12 @@ const char* type_4_1_query[] = {
 	FROM (\n\
 	SELECT name ,product_id, sum(amount) AS tot\n\
 	FROM online_sales natural join product \n\
-	WHERE DATE(order_time) < DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
 	GROUP BY product_id \n\
 	UNION ALL\n\
 	SELECT name, product_id, sum(amount) AS tot\n\
 	FROM in_store_sales natural join product \n\
-	WHERE DATE(order_time)<DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
 	GROUP BY product_id \n\
 	) AS A\
 	GROUP BY A.product_id\n\
@@ -290,12 +290,12 @@ const char* type_4_2_query[] = {
 	(\n\
 	SELECT name ,product_id, sum(amount) AS tot\n\
 	FROM online_sales natural join product \n\
-	WHERE DATE(order_time) < DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
 	GROUP BY product_id \n\
 	UNION ALL\n\
 	SELECT name, product_id, sum(amount) AS tot\n\
 	FROM in_store_sales natural join product \n\
-	WHERE DATE(order_time)<DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
 	GROUP BY product_id \n\
 	) AS A\n\
 	GROUP BY A.product_id\n\
@@ -340,12 +340,12 @@ const char* type_7_query[] = {
 	FROM customer natural join (\n\
 	SELECT customer_id ,product_id, sum(price* amount) AS tot\n\
 	FROM online_sales natural join product \n\
-	WHERE DATE(order_time) < DATE_FORMAT(NOW(), '%%Y-%%m-01 00:00:00')\n\
+	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 MONTH, '%%Y-%%m-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-%%m-01 00:00:00')\n\
 	GROUP BY customer_id \n\
 	UNION ALL\n\
 	SELECT customer_id , product_id, sum(price * amount) AS tot\n\
 	FROM in_store_sales natural join product \n\
-	WHERE DATE(order_time)<DATE_FORMAT(NOW(), '%%Y-%%m-01 00:00:00')\n\
+	WHERE  DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 MONTH, '%%Y-%%m-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-%%m-01 00:00:00')\n\
 	GROUP BY customer_id \n\
 	) AS A\
 	WHERE A.customer_id IN (SELECT customer_id FROM contract)\n\
