@@ -130,6 +130,7 @@ const char* type_2_1_query[] = {
 	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
 	GROUP BY product_id \n\
 	) AS A\
+	WHERE A.customer_id = %d\n\
 	ORDER BY A.tot DESC\n\
 	LIMIT 1;\n\
 ",
@@ -474,6 +475,16 @@ void command_type_1_1_function(int broken_tracking_number, int numbers) {
 		fprintf(stdout, "\n\n\n");
 		//2022-05-14 00:00:00 
 
+		if (mysql_query(connection, command) != 0) {
+			fprintf(stdout, "command: %s\n", command);
+			fprintf(stdout, "invalid command!\n");
+			printf("%d error : %s\n", mysql_errno(&conn), mysql_error(&conn));
+			return;
+		}
+
+		while ((row = mysql_fetch_row(result_first))) {
+		}
+
 		if (!mysql_num_rows(result_first)) {
 			fprintf(stdout, "no result\n");
 			return;
@@ -565,7 +576,7 @@ void command_type_1_function() {
 }
 
 void command_type_2_1_function(int customer_id) {
-	sprintf(command, type_2_1_query[0], customer_id, customer_id); // customer id Äõ¸® Ã£±â
+	sprintf(command, type_2_1_query[0], customer_id); // customer id Äõ¸® Ã£±â
 	fprintf(stdout, "------------ TYPE 2-1 ------------\n\n\n");
 	fprintf(stdout, "------------Best product that vip bought most last year!------------\n\n\n");
 
