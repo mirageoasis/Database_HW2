@@ -84,7 +84,7 @@ const char* type_1_1_query[] = {
 // 2번 select 문
 // 2-1 select 문
 
-const char* type_2_query[] = {
+const char* type_2_query[] =  {
 "\
 	SELECT A.customer_id, customer.name, SUM(A.tot)\n\
 	FROM customer natural join (\n\
@@ -334,8 +334,45 @@ const char* type_6_query[] = {
 "
 };
 
+const char* type_7_query[] = {
+"\
+	SELECT A.customer_id, customer.name, SUM(A.tot)\n\
+	FROM customer natural join (\n\
+	SELECT customer_id ,product_id, sum(price* amount) AS tot\n\
+	FROM online_sales natural join product \n\
+	WHERE DATE(order_time) < DATE_FORMAT(NOW(), '%%Y-%%m-01 00:00:00')\n\
+	GROUP BY customer_id \n\
+	UNION ALL\n\
+	SELECT customer_id , product_id, sum(price * amount) AS tot\n\
+	FROM in_store_sales natural join product \n\
+	WHERE DATE(order_time)<DATE_FORMAT(NOW(), '%%Y-%%m-01 00:00:00')\n\
+	GROUP BY customer_id \n\
+	) AS A\
+	WHERE A.customer_id IN (SELECT customer_id FROM contract)\n\
+	GROUP BY A.customer_id\n\
+	ORDER BY SUM(A.tot) DESC\n\
+	;\n\
+",
+"\
+	SELECT A.customer_id, customer.name, SUM(A.tot)\n\
+	FROM customer natural join (\n\
+	SELECT customer_id ,product_id, sum(price* amount) AS tot\n\
+	FROM online_sales natural join product \n\
+	WHERE DATE(order_time) < DATE_FORMAT(NOW(), '%%Y-%%m-01 00:00:00')\n\
+	GROUP BY customer_id \n\
+	UNION ALL\n\
+	SELECT customer_id , product_id, sum(price * amount) AS tot\n\
+	FROM in_store_sales natural join product \n\
+	WHERE DATE(order_time)<DATE_FORMAT(NOW(), '%%Y-%%m-01 00:00:00')\n\
+	GROUP BY customer_id \n\
+	) AS A\
+	GROUP BY A.customer_id\n\
+	ORDER BY SUM(A.tot) DESC\n\
+	;\n\
+",
+};
 
-// 7번 selec 문
+// 7번 selec 문 union 을 사용하는 거로
 
 char command[1024];
 
@@ -985,6 +1022,47 @@ void command_type_6_function() {
 	return;
 }
 
+void command_type_7_function() {
+
+
+	sprintf(command, type_7_query[0]); // customer id 쿼리 찾기
+	fprintf(stdout, "------------TYPE 7------------\n\n\n");
+	fprintf(stdout, "------------CONTRACTED CUSTOMER BILL------------\n\n\n");
+
+	if (mysql_query(connection, command) != 0) {
+		fprintf(stdout, "command: %s\n", command);
+		fprintf(stdout, "invalid command!\n");
+		printf("%d error : %s\n", mysql_errno(&conn), mysql_error(&conn));
+		return;
+	}
+
+	MYSQL_RES* result_first = mysql_use_result(connection);
+	// 다 찾아야한다 ㅋㅋㅋ 반복문으로 
+
+	if (result_first) { // if there are error in query
+
+		MYSQL_ROW row;
+		//fprintf(stdout, "result number %ld!\n", mysql_num_rows(result)); 이거는 store result랑 함께 쓰여야함
+
+		while ((row = mysql_fetch_row(result_first))) {
+			//fprintf(stdout, "%s\n", row[0]);
+			fprintf(stdout, "%s %s %s\n", row[0], row[1], row[2]);
+			//fprintf(stdout, "%s %s %s %s\n", row[0], row[1], row[2], row[3]);
+		}
+
+		fprintf(stdout, "\n\n------------CONTRACTED CUSTOMER BILL------------\n\n\n");
+
+		//  쿼리 실행
+
+	}
+	else {
+		fprintf(stderr, "Error: %s\n", mysql_error(connection));
+	}
+
+	return;
+}
+
+
 void run_query(int command_number) {
 	if (!command_number)
 		return;
@@ -1012,6 +1090,7 @@ void run_query(int command_number) {
 		command_type_6_function();
 		break;
 	case 7:
+		command_type_7_function();
 		break;
 	default:
 		fprintf(stdout, "invalid command!\n");
