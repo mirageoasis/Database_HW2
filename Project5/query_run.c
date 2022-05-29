@@ -483,12 +483,14 @@ void command_type_1_1_function(int broken_tracking_number, int numbers) {
 		}
 
 		while ((row = mysql_fetch_row(result_first))) {
+			// 이거해야 결과가 입력이 된다.
 		}
-
 		if (!mysql_num_rows(result_first)) {
 			fprintf(stdout, "no result\n");
+			mysql_free_result(result_first);
 			return;
 		}// 결과가 존재하지 않으면 알림 띄우기
+		mysql_free_result(result_first);
 	}
 	else {
 		fprintf(stderr, "Error: %s\n", mysql_error(connection));
