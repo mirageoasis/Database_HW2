@@ -77,7 +77,11 @@ const char* type_1_1_query[] = {
 ,
 "\
 	INSERT INTO online_sales(order_time, card_number, amount, tracking_number, product_id, customer_id, warehouse_id)\n\
-	VALUES('%s', '%s', '%s', %d, '%s', '%s', '%s');\
+	VALUES\n\
+"
+,
+"\
+	('%s', '%s', '%s', %d, '%s', '%s', '%s'),\n\
 "
 };
 
@@ -462,18 +466,22 @@ void command_type_1_1_function(int broken_tracking_number, int numbers) {
 
 
 		memset(command, 0, sizeof(command));
+		strcat(command, type_1_1_query[3]);
+
 		while ((row = mysql_fetch_row(result_first))) {
-			
 			//  이거 고쳐야함 	1번 고치고 new_tracking_number
 			//row [1]을 새로 넣기
-			sprintf(command + strlen(command), type_1_1_query[3], now_char, row[2], row[3], new_tracking_number,row[5], row[6], row[7]); // 커맨드에 insert into 넣기
+			sprintf(command + strlen(command), type_1_1_query[4], now_char, row[2], row[3], new_tracking_number,row[5], row[6], row[7]); // 커맨드에 insert into 넣기
 			fprintf(stdout, "created new order tracking number of %d\n", new_tracking_number);
-			//fprintf(stdout, "%s\n", command);
 			 //  쿼리 실행
 
 		}
 		fprintf(stdout, "\n\n\n");
 		//2022-05-14 00:00:00 
+
+		command[strlen(command) - 2] = ';';
+
+		//printf("%s\n", command);
 
 		if (mysql_query(connection, command) != 0) {
 			fprintf(stdout, "command: %s\n", command);
@@ -482,15 +490,22 @@ void command_type_1_1_function(int broken_tracking_number, int numbers) {
 			return;
 		}
 
-		while ((row = mysql_fetch_row(result_first))) {
-			// 이거해야 결과가 입력이 된다.
-		}
-		if (!mysql_num_rows(result_first)) {
-			fprintf(stdout, "no result\n");
-			mysql_free_result(result_first);
-			return;
-		}// 결과가 존재하지 않으면 알림 띄우기
-		mysql_free_result(result_first);
+		MYSQL_RES* result_second = mysql_use_result(connection);
+		result_second = mysql_use_result(connection);
+		result_second = mysql_use_result(connection);
+
+
+		mysql_free_result(result_second);
+
+		//while ((row = mysql_fetch_row(result_second))) {
+		//	// 이거해야 결과가 입력이 된다.
+		//}
+		//if (!mysql_num_rows(result_second)) {
+		//	fprintf(stdout, "no result\n");
+		//	//mysql_free_result(result_first);
+		//	return;
+		//}// 결과가 존재하지 않으면 알림 띄우기
+		//mysql_free_result(result_first);
 	}
 	else {
 		fprintf(stderr, "Error: %s\n", mysql_error(connection));

@@ -6,38 +6,39 @@ USE testing;
 
 #customer
 CREATE TABLE customer(
- customer_id        INT NOT NULL AUTO_INCREMENT,
- name     VARCHAR(20),
- sex     INT,
+ customer_id  INT UNSIGNED NOT NULL AUTO_INCREMENT,
+ name    VARCHAR(20),
+ sex     char(6),
  location    VARCHAR(20),
  email_address VARCHAR(50) NOT NULL,
 
- PRIMARY KEY(customer_id)
+ PRIMARY KEY(customer_id),
+ CONSTRAINT sex_check CHECK(sex IN ('male', 'female'))
 );
 # insert 할 때 customer_id는 빼고 insert 하기 
 
 #contract
 CREATE TABLE contract(
- customer_id        INT NOT NULL,
- account_number     INT NOT NULL,
+ customer_id        INT UNSIGNED NOT NULL,
+ account_number     INT UNSIGNED NOT NULL,
  
  FOREIGN KEY(customer_id) REFERENCES customer(customer_id)
 );
 
 #product
 CREATE TABLE product (
- product_id		INT NOT NULL,
+ product_id		INT UNSIGNED NOT NULL,
  manufacturer	VARCHAR(20) NOT NULL,
  type			VARCHAR(20) NOT NULL,
  name			VARCHAR(20) NOT NULL,
- price			INT NOT NULL,
+ price			INT UNSIGNED NOT NULL,
 
  PRIMARY KEY(product_id)
 );
 
 #store
 CREATE TABLE store(
- store_id		INT NOT NULL AUTO_INCREMENT,
+ store_id		INT UNSIGNED NOT NULL AUTO_INCREMENT,
  region			VARCHAR(20) NOT NULL,
 
  PRIMARY KEY(store_id)
@@ -45,7 +46,7 @@ CREATE TABLE store(
 
 #warehouse
 CREATE TABLE warehouse(
- warehouse_id	INT NOT NULL AUTO_INCREMENT,
+ warehouse_id	INT UNSIGNED NOT NULL AUTO_INCREMENT,
  region			VARCHAR(20) NOT NULL,
 
  PRIMARY KEY(warehouse_id)
@@ -54,12 +55,12 @@ CREATE TABLE warehouse(
 
 #in_store_sales
 CREATE TABLE in_store_sales(
- order_id		INT NOT NULL AUTO_INCREMENT,
- order_time        TIMESTAMP NOT NULL,
- amount				INT NOT NULL,
- product_id			INT NOT NULL,
- customer_id		INT NOT NULL,
- store_id			INT NOT NULL,
+ order_id			INT UNSIGNED NOT NULL AUTO_INCREMENT,
+ order_time			TIMESTAMP NOT NULL,
+ amount				INT UNSIGNED NOT NULL,
+ product_id			INT UNSIGNED NOT NULL,
+ customer_id		INT UNSIGNED NOT NULL,
+ store_id			INT UNSIGNED NOT NULL,
 
  PRIMARY KEY(order_id),
  FOREIGN KEY(product_id) REFERENCES product(product_id),
@@ -70,7 +71,7 @@ CREATE TABLE in_store_sales(
 
 #tracking number
 CREATE TABLE tracking_id(
-	tracking_number	INT NOT NULL,
+	tracking_number	INT UNSIGNED NOT NULL,
 	ETA				TIMESTAMP NOT NULL,
 	time_arrived	TIMESTAMP,
 	
@@ -80,14 +81,14 @@ CREATE TABLE tracking_id(
 
 #online_sales
 CREATE TABLE online_sales(
- order_id			INT NOT NULL AUTO_INCREMENT,
+ order_id			INT UNSIGNED NOT NULL AUTO_INCREMENT,
  order_time			TIMESTAMP NOT NULL,
- card_number		INT,
- amount				INT NOT NULL,
- tracking_number	INT NOT NULL,
- product_id			INT NOT NULL,
- customer_id		INT NOT NULL,
- warehouse_id		INT NOT NULL,
+ card_number		INT UNSIGNED NOT NULL,
+ amount				INT UNSIGNED NOT NULL,
+ tracking_number	INT UNSIGNED NOT NULL,
+ product_id			INT UNSIGNED NOT NULL,
+ customer_id		INT UNSIGNED NOT NULL,
+ warehouse_id		INT UNSIGNED NOT NULL,
 
  PRIMARY KEY(order_id),
  FOREIGN KEY(tracking_number) REFERENCES tracking_id(tracking_number),
@@ -99,9 +100,9 @@ CREATE TABLE online_sales(
 
 #store_stock
 CREATE TABLE store_stock(
- product_id		INT NOT NULL,
- store_id		INT NOT NULL,
- amount			INT NOT NULL,
+ product_id		INT UNSIGNED NOT NULL,
+ store_id		INT UNSIGNED NOT NULL,
+ amount			INT UNSIGNED NOT NULL,
  
  FOREIGN KEY(product_id) REFERENCES product(product_id),
  FOREIGN KEY(store_id) REFERENCES store(store_id)
@@ -111,9 +112,9 @@ CREATE TABLE store_stock(
 CREATE TABLE store_reorder (
  reorder_id		INT NOT NULL AUTO_INCREMENT,
  reorder_time	TIMESTAMP NOT NULL,
- amount			INT NOT NULL,
- product_id		INT NOT NULL,
- store_id		INT NOT NULL,
+ amount			INT UNSIGNED NOT NULL,
+ product_id		INT UNSIGNED NOT NULL,
+ store_id		INT UNSIGNED NOT NULL,
 
  PRIMARY KEY(reorder_id),
  FOREIGN KEY(product_id) REFERENCES product(product_id),
@@ -122,9 +123,9 @@ CREATE TABLE store_reorder (
 
 #warehouse_stock
 CREATE TABLE warehouse_stock(
- product_id		INT NOT NULL,
- warehouse_id	INT NOT NULL,
- amount			INT NOT NULL,
+ product_id		INT UNSIGNED NOT NULL,
+ warehouse_id	INT UNSIGNED NOT NULL,
+ amount			INT UNSIGNED NOT NULL,
  
  FOREIGN KEY(product_id) REFERENCES product(product_id),
  FOREIGN KEY(warehouse_id) REFERENCES warehouse(warehouse_id)
@@ -132,11 +133,11 @@ CREATE TABLE warehouse_stock(
 
 #warehouse_reorder
 CREATE TABLE warehouse_reorder (
- reorder_id		INT NOT NULL AUTO_INCREMENT,
+ reorder_id		INT UNSIGNED NOT NULL AUTO_INCREMENT,
  reorder_time	TIMESTAMP NOT NULL,
- amount			INT NOT NULL,
- product_id		INT NOT NULL,
- warehouse_id		INT NOT NULL,
+ amount			INT UNSIGNED NOT NULL,
+ product_id		INT UNSIGNED NOT NULL,
+ warehouse_id	INT UNSIGNED NOT NULL,
 
  PRIMARY KEY(reorder_id),
  FOREIGN KEY(product_id) REFERENCES product(product_id),
