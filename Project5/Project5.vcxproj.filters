@@ -21,24 +21,6 @@
     <ClCompile Include="sql_reader.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Desktop\randgen\in_store_sales.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Desktop\randgen\online_sales.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Desktop\randgen\store_reorder.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Desktop\randgen\store_stock.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Desktop\randgen\warehouse_reorder.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Desktop\randgen\warehouse_stock.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="query_run.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
