@@ -549,7 +549,7 @@ void command_type_1_function() {
 		}
 		
 		if (!mysql_num_rows(result_first)) {
-			fprintf(stdout, "no result\n", mysql_num_rows(result_first));
+			fprintf(stdout, "no result\n");
 			return;
 		}// 결과가 존재하지 않으면 함수 중단
 
