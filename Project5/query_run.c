@@ -92,7 +92,7 @@ const char* type_2_query[] =  {
 "\
 	SELECT A.customer_id, customer.name, SUM(A.tot)\n\
 	FROM customer natural join (\n\
-	SELECT customer_id ,product_id, sum(price* amount) AS tot\n\
+	SELECT customer_id ,product_id, sum(price * amount) AS tot\n\
 	FROM online_sales natural join product \n\
 	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
 	GROUP BY customer_id \n\
@@ -126,12 +126,12 @@ const char* type_2_1_query[] = {
 	FROM customer natural join (\n\
 	SELECT customer_id ,product_id, name AS N, sum(amount) AS tot\n\
 	FROM online_sales natural join product \n\
-	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00') AND customer_id=%d\n\
 	GROUP BY product_id \n\
 	UNION ALL\n\
 	SELECT customer_id , product_id, name AS N, sum(amount) AS tot\n\
 	FROM in_store_sales natural join product \n\
-	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00')\n\
+	WHERE DATE(order_time) BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 YEAR, '%%Y-01-01 00:00:00') AND DATE_FORMAT(NOW(), '%%Y-01-01 00:00:00') AND customer_id=%d\n\
 	GROUP BY product_id \n\
 	) AS A\
 	WHERE A.customer_id = %d\n\
@@ -593,7 +593,7 @@ void command_type_1_function() {
 }
 
 void command_type_2_1_function(int customer_id) {
-	sprintf(command, type_2_1_query[0], customer_id); // customer id Äõ¸® Ã£±â
+	sprintf(command, type_2_1_query[0], customer_id, customer_id, customer_id); // customer id Äõ¸® Ã£±â
 	fprintf(stdout, "------------ TYPE 2-1 ------------\n\n\n");
 	fprintf(stdout, "------------Best product that vip bought most last year!------------\n\n\n");
 
