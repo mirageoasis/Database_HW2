@@ -426,7 +426,7 @@ void command_type_1_1_function(int broken_tracking_number, int numbers) {
 	time(&rawtime);
 	now_tm = localtime(&rawtime);
 	sprintf(now_char, "%d-%02d-%02d %02d:%02d:%02d",now_tm->tm_year + 1900, now_tm->tm_mon, now_tm->tm_mday, now_tm->tm_hour, now_tm->tm_min, now_tm->tm_sec);
-	sprintf(new_ETA_char, "%d-%02d-%02d %02d:%02d:%02d", now_tm->tm_year + 1900 , now_tm->tm_mon + 1, now_tm->tm_mday, 0, 0, 0);
+	sprintf(new_ETA_char, "%d-%02d-%02d %02d:%02d:%02d", now_tm->tm_year + 1900 , (now_tm->tm_mon + 2) % 12, now_tm->tm_mday, 0, 0, 0);
 	//fprintf(stdout, "now clock is %s\n", now_char);
 	//fprintf(stdout, "new ETA is %s\n", new_ETA_char);
 	sprintf(command, type_1_1_query[1], new_tracking_number, new_ETA_char,"0000-00-00 00:00:00");
